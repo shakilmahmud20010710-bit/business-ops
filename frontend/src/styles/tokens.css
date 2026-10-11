@@ -1,0 +1,35 @@
+/* BusinessOps design tokens.
+   Design language: light, warm, printed-ledger. Serif headings over sans body,
+   generous whitespace, square 2px corners, top navigation instead of a sidebar.
+   Accent is burnt orange.
+   Deliberately unlike On-Watch, which is dark, dense, all-sans and rail-navigated. */
+
+:root {
+  /* surfaces — warm paper, not cool grey */
+  --bo-paper:      #faf7f2;
+  --bo-surface:    #ffffff;
+  --bo-surface-2:  #f4efe7;
+  --bo-rule:       #e4dbcd;
+  --bo-rule-soft:  #efe8dd;
+
+  /* ink */
+  --bo-ink:        #2f2a24;
+  --bo-ink-soft:   #6d655a;
+  --bo-ink-faint:  #9a9083;
+
+  /* accent + status */
+  --bo-accent:     #c2410c;
+  --bo-accent-2:   #9a3412;
+  --bo-accent-wash:#fdf1e7;
+  --bo-positive:   #2f6f4f;
+  --bo-negative:   #a33a26;
+
+  /* type */
+  --bo-serif:      'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --bo-sans:       'IBM Plex Sans', -apple-system, system-ui, sans-serif;
+
+  /* shape + rhythm — roomier than On-Watch on purpose */
+  --bo-radius:     2px;
+  --bo-gap:        22px;
+  --bo-page:       1180px;
+}

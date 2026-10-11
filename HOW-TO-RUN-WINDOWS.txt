@@ -1,0 +1,119 @@
+﻿BUSINESSOPS - HOW TO RUN ON WINDOWS
+===================================
+
+You need a Windows 10 (build 19044 or newer) or Windows 11 PC.
+You do NOT need Python, Node, or MySQL. The script installs everything.
+
+
+STEP 1 - UNBLOCK THE ZIP  (do this before extracting)
+-----------------------------------------------------
+Windows blocks files that arrived from the internet, and that block survives
+extraction. If you skip this, the script may refuse to run.
+
+  1. Right-click businessops.zip
+  2. Choose Properties
+  3. At the bottom, if you see an "Unblock" checkbox, tick it
+  4. Click OK
+
+If there is no Unblock checkbox, there is nothing to do - carry on.
+
+
+STEP 2 - EXTRACT IT PROPERLY
+----------------------------
+  1. Right-click the zip -> "Extract All..."
+  2. Pick a simple folder such as  C:\Users\<you>\Desktop
+  3. Click Extract
+
+Do not double-click into the zip and run the script from there. Windows opens
+that as a temporary folder and the script will not find the project files.
+
+
+STEP 3 - RUN IT
+---------------
+Open the extracted "businessops" folder and double-click:
+
+      start.bat
+
+A black window opens and tells you what it is doing. Leave it open.
+
+
+WHAT HAPPENS THE FIRST TIME
+---------------------------
+If Docker Desktop is NOT already installed:
+
+  - Windows shows a "User Account Control" prompt. Click YES.
+    (This is only needed to install Docker. Later runs never ask.)
+  - Docker Desktop downloads and installs. This takes several minutes
+    and the download is about 700 MB.
+  - The script then says Windows must be RESTARTED.
+    -> Restart your PC.
+    -> After restarting, double-click start.bat again.
+
+If Docker Desktop IS already installed, none of the above happens.
+
+Then, on every run:
+
+  - The script starts Docker and waits for it to be ready.
+  - It builds and starts the app. THE FIRST BUILD TAKES A FEW MINUTES
+    because it downloads MySQL and installs the dependencies.
+    Later runs take a few seconds.
+  - Your browser opens automatically at:
+
+        http://localhost:5174
+
+
+SIGNING IN
+----------
+  Owner:  rakib@businessops.dev
+  Staff:  shopna@businessops.dev
+  Password for all accounts:  password123
+
+
+STOPPING IT
+-----------
+Double-click:
+
+      stop.bat
+
+Your data is kept. Running start.bat again brings it back as you left it.
+
+Closing the black window does NOT stop the app - use stop.bat.
+
+
+OTHER THINGS YOU CAN DO
+-----------------------
+Open the folder, click in the address bar at the top of the window, type cmd
+and press Enter. Then:
+
+  start.bat -Reset     Wipe the database and restore the original demo data.
+                       Use this if you have changed things and want a clean
+                       slate before showing it to someone.
+
+  start.bat -Logs      Start, then show the running logs. Ctrl+C stops
+                       watching; the app keeps running.
+
+
+IF SOMETHING GOES WRONG
+-----------------------
+"Windows build ... is below 19044"
+      Windows is too old for Docker Desktop. Run Windows Update first.
+
+"Docker Desktop did not become ready in time"
+      Open Docker Desktop from the Start menu and wait until the bottom-left
+      corner says "Engine running". Then run start.bat again.
+      If it never starts, virtualization is probably switched off in your
+      BIOS/UEFI. Search for "enable virtualization" plus your PC model.
+
+"These ports are already in use"
+      Something else on the PC is using 5174, 8002 or 3308.
+      Open the ".env" file in Notepad, change those numbers to free ones
+      (for example add 100 to each), save, and run start.bat again.
+
+"The app did not answer yet"
+      It is probably still starting. Wait a minute and open http://localhost:5174
+      in your browser yourself.
+
+Administrator was refused
+      Install Docker Desktop yourself from
+      https://www.docker.com/products/docker-desktop/
+      then run start.bat again - it will skip the install.

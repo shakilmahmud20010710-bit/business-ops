@@ -1,0 +1,55 @@
+services:
+  db:
+    image: mysql:8.4
+    container_name: businessops_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-businessops}
+      MYSQL_USER: ${MYSQL_USER:-bizops}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-bizopspass}
+    ports:
+      - "${DB_PORT:-3308}:3306"
+    volumes:
+      - businessops_db_data:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpass}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  backend:
+    build: ./backend
+    container_name: businessops_backend
+    restart: unless-stopped
+    environment:
+      FLASK_ENV: development
+      DATABASE_URI: mysql+pymysql://${MYSQL_USER:-bizops}:${MYSQL_PASSWORD:-bizopspass}@db:3306/${MYSQL_DATABASE:-businessops}?charset=utf8mb4
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-change-me}
+      CORS_ORIGINS: http://localhost:${FRONTEND_PORT:-5174}
+    ports:
+      - "${BACKEND_PORT:-8002}:8000"
+    volumes:
+      - ./backend/app:/srv/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    container_name: businessops_frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: http://localhost:${BACKEND_PORT:-8002}
+    ports:
+      - "${FRONTEND_PORT:-5174}:5174"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/index.html:/app/index.html
+    depends_on:
+      - backend
+
+volumes:
+  businessops_db_data:
